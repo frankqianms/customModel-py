@@ -1,0 +1,13 @@
+{
+  "schema": 1.1,
+  "description": "Chat with Teams AI Bot",
+  "type": "completion",
+  "completion": {
+      "max_tokens": 1000,
+      "temperature": 0.9,
+      "top_p": 1
+  },
+  "augmentation": {
+      "augmentation_type": "None"
+  }
+}
