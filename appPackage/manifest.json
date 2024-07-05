@@ -15,12 +15,12 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "basicaitest${{APP_NAME_SUFFIX}}",
-        "full": "full name for basicaitest"
+        "short": "custommodel${{APP_NAME_SUFFIX}}",
+        "full": "full name for custommodel"
     },
     "description": {
-        "short": "short description for basicaitest",
-        "full": "full description for basicaitest"
+        "short": "short description for custommodel",
+        "full": "full description for custommodel"
     },
     "accentColor": "#FFFFFF",
     "bots": [
