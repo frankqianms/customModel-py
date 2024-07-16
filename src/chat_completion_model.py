@@ -42,9 +42,11 @@ class ChatCompletionModel(PromptCompletionModel):
             print('\nCHAT PROMPT:')
             print(self.message_to_dict(result.output))
         try:
+            # call the local llm to generate the response
             import json
             my_local_model = LocalModel()
             res = await my_local_model.generate(json.dumps({'messages': self.message_to_dict(result.output)}), template.config)
+            # if you want to call an external API, you can use the following code:
             # res = self._session.post(url=self.options.endpoint, data=request_data)
             if self.options.logRequests:
                 print('\nCHAT RESPONSE:')
