@@ -4,8 +4,14 @@ Welcome to our sample application, designed to demonstrate the flexibility and p
 
 ## Features
 
-- **Support for Remote Models**: Leverage the capabilities of advanced AI models hosted on remote servers, such as Azure AI Studio. This option is ideal for those looking to utilize cloud-based AI services for enhanced performance and scalability.
-- **Integration with Local Models**: For users who prefer or require running AI models locally, this app supports integration with local models, including transformer pre-trained models. This is particularly useful for development and testing purposes, or when operating in environments with limited internet access.
+- **Support for Remote Models**: 
+
+    Leverage the capabilities of advanced AI models hosted on remote servers, such as Azure AI Studio. This option is ideal for those looking to utilize cloud-based AI services for enhanced performance and scalability.
+- **Integration with Local Models**: 
+
+    For users who prefer or require running AI models locally, this app supports integration with local models, including transformer pre-trained models. This is particularly useful for development and testing purposes, or when operating in environments with limited internet access.
+    
+    In this sample, we leverage [microsoft/phi-3-mini-4k-instruct](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct) as pre-trained local model in `transfomers` library and host a local server to run the model locally.
 
 
 ## Get started with the sample

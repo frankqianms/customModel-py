@@ -1,16 +1,12 @@
-# Load model directly
-from flask import Flask, request
+from aiohttp import web
 import re
 from typing import Any
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-local_model_app = Flask(__name__)
-        
 roles = ['assistant', 'user', 'system']
 
 class LocalModel:
     def __init__(self):
-        # set your local model path
         self.model = AutoModelForCausalLM.from_pretrained("microsoft/phi-3-mini-4k-instruct")
         self.tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-3-mini-4k-instruct")
 
@@ -23,21 +19,18 @@ class LocalModel:
         prompt = self.process(prompt)
         inputs = self.tokenizer(prompt, return_tensors="pt")
         try:
-            # generate
             generate_ids = self.model.generate(inputs.input_ids, max_length=config['max_tokens'])
             generated_text = self.tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
 
             content = []
             sentences = generated_text.split("\n")
             for sentence in sentences:
-                # sometimes the model generates empty sentences or repeat the prompt, need to filter them out
                 if prompt.replace(" ", "").lower().find(sentence.replace(" ", "").lower())!=-1 \
                         or sentence.replace(" ", "").lower().find(prompt.replace(" ", "").lower())!=-1 \
                         or sentence.strip()=='':
                     continue
-                role = 'assistant'  # Default role
+                role = 'assistant'
                 modified_sentence = sentence.strip()
-                # Check if the sentence contains any of the roles
                 for keyword in roles:
                     pattern = r'\b' + re.escape(keyword) + r'(:\s?|\b)'
                     if re.search(pattern, modified_sentence, re.IGNORECASE):
@@ -53,16 +46,18 @@ class LocalModel:
         except Exception as e:
             print(e)
             return {"choices": [{''}]}
-        
+
 local_model = LocalModel()
 
-@local_model_app.route('/generate', methods=['POST'])
-async def handle_generate():
-    data = request.json
+async def handle_generate(request):
+    data = await request.json()
     prompt = data.get('messages')
     config = {**{k: v for k, v in data.items() if k != 'messages'}}
     result = await local_model.generate(prompt, config)
-    return result
+    return web.json_response(result)
+
+app = web.Application()
+app.add_routes([web.post('/generate', handle_generate)])
 
 if __name__ == '__main__':
-    local_model_app.run(port=3979)
+    web.run_app(app, port=3979)

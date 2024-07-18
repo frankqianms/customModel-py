@@ -6,7 +6,7 @@ from teams.ai.models.prompt_response import PromptResponse
 from teams.ai.prompts.message import Message
 from teams.ai.models.prompt_completion_model import PromptCompletionModel
 
-from local_model import LocalModel
+from local_model_server import LocalModel
 
 @dataclass
 class ChatCompletionModelOptions:
