@@ -1,7 +1,11 @@
 # Overview of the Custom Model Sample
 
-This app sample is built on top of [Teams AI library](https://aka.ms/teams-ai-library).
-This sample showcases a bot app using any customized model you like that responds to user questions like an AI assistant. This enables your users to talk with the AI assistant in Teams to find information.
+Welcome to our sample application, designed to demonstrate the flexibility and power of integrating AI models into your projects. This app is built to work seamlessly with both remote and local AI models, providing a versatile platform for developing AI-powered applications.
+
+## Features
+
+- **Support for Remote Models**: Leverage the capabilities of advanced AI models hosted on remote servers, such as Azure AI Studio. This option is ideal for those looking to utilize cloud-based AI services for enhanced performance and scalability.
+- **Integration with Local Models**: For users who prefer or require running AI models locally, this app supports integration with local models, including transformer pre-trained models. This is particularly useful for development and testing purposes, or when operating in environments with limited internet access.
 
 
 ## Get started with the sample
@@ -18,7 +22,29 @@ This sample showcases a bot app using any customized model you like that respond
 
 ### Configurations
 1. Open the command box and enter `Python: Create Environment` to create and activate your desired virtual environment. Remember to select `src/requirements.txt` as dependencies to install when creating the virtual environment.
-1. In file *env/.env.local.user*, fill in your Azure AI model key `API_KEY`, and endpoint `ENDPOINT`.
+
+* **Configuring for Remote Models**
+
+    If you're using a remote model, you'll need to provide your API key and endpoint so the app can communicate with the model. Here's how:
+
+    1. Open the file `env/.env.local.user` in your project directory.
+    2. Fill in your API key and endpoint details as follows:
+        ```
+        API_KEY=your_api_key_here,
+        ENDPOINT=your_model_endpoint_here
+        ```
+* **Configuring for Local Models**
+
+    For those opting to use a local model, the setup is just as straightforward:
+
+    1. Run `python src/local_model_server.py` in root folder to start a local model internal server.
+    2. Open the file `env/.env.local.user` in your project directory.
+    3. To configure the app to use a local model, enter the following details:
+        ```
+        SECRET_API_KEY='fake_key',
+        ENDPOINT='http://127.0.0.1:3979/generate'
+        ```
+    This configuration tells the app to communicate with a local server running on your machine, simulating the behavior of a remote AI model but with the convenience and privacy of local execution.
 
 ### Conversation with bot
 1. Select the Teams Toolkit icon on the left in the VS Code toolbar.
@@ -32,34 +58,6 @@ This sample showcases a bot app using any customized model you like that respond
 > For local debugging using Teams Toolkit CLI, you need to do some extra steps described in [Set up your Teams Toolkit CLI for local debugging](https://aka.ms/teamsfx-cli-debugging).
 
 ![ai chat bot](https://user-images.githubusercontent.com/7642967/258726187-8306610b-579e-4301-872b-1b5e85141eff.png)
-
-## What's included in the sample
-
-| Folder       | Contents                                            |
-| - | - |
-| `.vscode`    | VSCode files for debugging                          |
-| `appPackage` | Templates for the Teams application manifest        |
-| `env`        | Environment files                                   |
-| `infra`      | Templates for provisioning Azure resources          |
-| `src`        | The source code for the application                 |
-
-The following files can be customized and demonstrate an example implementation to get you started.
-
-| File                                 | Contents                                           |
-| - | - |
-|`src/app.py`| Hosts an aiohttp api server and exports an app module.|
-|`src/bot.py`| Handles business logics for the Custom Model Bot Sample.|
-|`src/config.py`| Defines the environment variables.|
-|`src/prompts/chat/skprompt.txt`| Defines the prompt.|
-|`src/prompts/chat/config.json`| Configures the prompt.|
-
-The following are Teams Toolkit specific project files. You can [visit a complete guide on Github](https://github.com/OfficeDev/TeamsFx/wiki/Teams-Toolkit-Visual-Studio-Code-v5-Guide#overview) to understand how Teams Toolkit works.
-
-| File                                 | Contents                                           |
-| - | - |
-|`teamsapp.yml`|This is the main Teams Toolkit project file. The project file defines two primary things:  Properties and configuration Stage definitions. |
-|`teamsapp.local.yml`|This overrides `teamsapp.yml` with actions that enable local execution and debugging.|
-|`teamsapp.testtool.yml`|This overrides `teamsapp.yml` with actions that enable local execution and debugging in Teams App Test Tool.|
 
 ## Extend the sample
 
