@@ -18,7 +18,7 @@ This sample showcases a bot app using any customized model you like that respond
 
 ### Configurations
 1. Open the command box and enter `Python: Create Environment` to create and activate your desired virtual environment. Remember to select `src/requirements.txt` as dependencies to install when creating the virtual environment.
-1. In file *src/local_model.py*, set your model and tokenizer and.
+1. In file *env/.env.local.user*, fill in your Azure AI model key `API_KEY`, and endpoint `ENDPOINT`.
 
 ### Conversation with bot
 1. Select the Teams Toolkit icon on the left in the VS Code toolbar.

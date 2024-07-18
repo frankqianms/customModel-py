@@ -15,5 +15,5 @@ class Config:
     PORT = 3978
     APP_ID = os.environ.get("BOT_ID", "")
     APP_PASSWORD = os.environ.get("BOT_PASSWORD", "")
-    API_KEY = os.environ["API_KEY"] # Azure OpenAI API key
-    ENDPOINT = os.environ["ENDPOINT"] # Azure OpenAI endpoint
+    API_KEY = os.environ["API_KEY"] # Azure AI Model API key
+    ENDPOINT = os.environ["ENDPOINT"] # Azure AI Model endpoint
