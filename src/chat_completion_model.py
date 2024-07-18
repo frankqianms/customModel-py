@@ -1,10 +1,12 @@
 from dataclasses import asdict, dataclass
-import requests
 from typing import Any, Dict, List, Optional
 
+import requests
 from teams.ai.models.prompt_response import PromptResponse
 from teams.ai.prompts.message import Message
 from teams.ai.models.prompt_completion_model import PromptCompletionModel
+
+from local_model import LocalModel
 
 @dataclass
 class ChatCompletionModelOptions:
@@ -25,7 +27,7 @@ class ChatCompletionModel(PromptCompletionModel):
         self._session.verify = True  # Ensures SSL verification is enabled
         # Custom validation for status codes
         self._session.hooks['response'].append(self._validate_status)
-
+    
     def _validate_status(self, r, *args, **kwargs):
         if not (r.status_code < 400 or r.status_code == 429):
             r.raise_for_status()
@@ -55,13 +57,13 @@ class ChatCompletionModel(PromptCompletionModel):
             print('\nCHAT PROMPT:')
             print(self.message_to_dict(result.output))
         try:
+            # call the local llm to generate the response
             completion_config_dict = asdict(template.config.completion)
             import json
             request_data = json.dumps({
                 'messages': self.message_to_dict(result.output),  # Assuming message_to_dict properly serializes each message
                 **completion_config_dict
             })
-            print(request_data)
             res = self._session.post(url=self.options.endpoint, data=request_data)
             if self.options.logRequests:
                 print('\nCHAT RESPONSE:')
@@ -78,5 +80,5 @@ class ChatCompletionModel(PromptCompletionModel):
             message=Message(
                 role=decoded_content['choices'][0]['message']['role'] if decoded_content['choices'][0]['message'].get('role') else 'assistant',
                 content=decoded_content['choices'][0]['message']['content'] if decoded_content['choices'][0]['message'].get('content') else ''
-            ) if decoded_content.get('choices') and decoded_content['choices'][0].get('message') else None,
+            ) if decoded_content.get('choices') and decoded_content['choices'][0].get('message') else None
         )

@@ -1,3 +1,4 @@
+transformers
 python-dotenv
 aiohttp
-teams-ai~=1.0.1
+teams-ai~=1.2.2
