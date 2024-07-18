@@ -74,3 +74,6 @@ deploy:
       envs:
         BOT_ID: ${{BOT_ID}}
         BOT_PASSWORD: ${{SECRET_BOT_PASSWORD}}
+        # --USE DEPLOYED MODEL--
+        API_KEY: ${{SECRET_API_KEY}}
+        ENDPOINT: ${{ENDPOINT}}

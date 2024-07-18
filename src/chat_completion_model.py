@@ -1,6 +1,7 @@
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, List, Optional
 
+import requests
 from teams.ai.models.prompt_response import PromptResponse
 from teams.ai.prompts.message import Message
 from teams.ai.models.prompt_completion_model import PromptCompletionModel
@@ -16,6 +17,20 @@ class ChatCompletionModelOptions:
 class ChatCompletionModel(PromptCompletionModel):
     def __init__(self, options: ChatCompletionModelOptions):
         self.options = options
+        # Create client
+        self._session = requests.Session()
+        self._session.headers.update({
+            'Authorization': f"Bearer {options.api_key}",
+            'Content-Type': 'application/json',
+            # 'User-Agent': '@microsoft/teams-ai-v1'
+        })
+        self._session.verify = True  # Ensures SSL verification is enabled
+        # Custom validation for status codes
+        self._session.hooks['response'].append(self._validate_status)
+    
+    def _validate_status(self, r, *args, **kwargs):
+        if not (r.status_code < 400 or r.status_code == 429):
+            r.raise_for_status()
 
     def message_to_dict(self, messages):
         # Implement the conversion logic based on the structure of the Message class
@@ -43,11 +58,13 @@ class ChatCompletionModel(PromptCompletionModel):
             print(self.message_to_dict(result.output))
         try:
             # call the local llm to generate the response
+            completion_config_dict = asdict(template.config.completion)
             import json
-            my_local_model = LocalModel()
-            res = await my_local_model.generate(json.dumps({'messages': self.message_to_dict(result.output)}), template.config)
-            # if you want to call an external API, you can use the following code:
-            # res = self._session.post(url=self.options.endpoint, data=request_data)
+            request_data = json.dumps({
+                'messages': self.message_to_dict(result.output),  # Assuming message_to_dict properly serializes each message
+                **completion_config_dict
+            })
+            res = self._session.post(url=self.options.endpoint, data=request_data)
             if self.options.logRequests:
                 print('\nCHAT RESPONSE:')
                 print('status', res.status_code)
@@ -56,12 +73,12 @@ class ChatCompletionModel(PromptCompletionModel):
             print(err)
             raise err
         # Decode the bytes object and parse it as JSON
-        decoded_content = res.content
+        decoded_content = json.loads(res.content.decode('utf-8'))
         # Adjust the return statement to use decoded_content
         return PromptResponse[str](
             input=last,
             message=Message(
                 role=decoded_content['choices'][0]['message']['role'] if decoded_content['choices'][0]['message'].get('role') else 'assistant',
                 content=decoded_content['choices'][0]['message']['content'] if decoded_content['choices'][0]['message'].get('content') else ''
-            ) if decoded_content.get('choices') and decoded_content['choices'][0].get('message') else None,
+            ) if decoded_content.get('choices') and decoded_content['choices'][0].get('message') else None
         )
