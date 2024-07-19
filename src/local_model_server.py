@@ -1,13 +1,13 @@
 from aiohttp import web
 import re
 from typing import Any
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, Phi3ForCausalLM
 
 roles = ['assistant', 'user', 'system']
 
 class LocalModel:
     def __init__(self):
-        self.model = AutoModelForCausalLM.from_pretrained("microsoft/phi-3-mini-4k-instruct")
+        self.model = Phi3ForCausalLM.from_pretrained("microsoft/phi-3-mini-4k-instruct")
         self.tokenizer = AutoTokenizer.from_pretrained("microsoft/phi-3-mini-4k-instruct")
 
     def process(self, prompts: str):
@@ -19,11 +19,12 @@ class LocalModel:
         prompt = self.process(prompt)
         inputs = self.tokenizer(prompt, return_tensors="pt")
         try:
-            generate_ids = self.model.generate(inputs.input_ids, max_length=config['max_tokens'])
+            generate_ids = self.model.generate(inputs.input_ids, do_sample=True, max_length=config['max_tokens'], temperature=config['temperature'], top_p=config['top_p'])
             generated_text = self.tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
 
+            # Model will generate multiple sentences, we need to split them and assign roles. Only return the sentences that are not in the prompt
             content = []
-            sentences = generated_text.split("\n")
+            sentences = generated_text.split("\n\n")
             for sentence in sentences:
                 if prompt.replace(" ", "").lower().find(sentence.replace(" ", "").lower())!=-1 \
                         or sentence.replace(" ", "").lower().find(prompt.replace(" ", "").lower())!=-1 \
