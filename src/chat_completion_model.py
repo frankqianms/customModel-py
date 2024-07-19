@@ -6,16 +6,14 @@ from teams.ai.models.prompt_response import PromptResponse
 from teams.ai.prompts.message import Message
 from teams.ai.models.prompt_completion_model import PromptCompletionModel
 
-from local_model_server import LocalModel
-
 @dataclass
-class ChatCompletionModelOptions:
+class CustomChatCompletionModelOptions:
     api_key: str
     endpoint: str
     logRequests: Optional[bool] = True
 
-class ChatCompletionModel(PromptCompletionModel):
-    def __init__(self, options: ChatCompletionModelOptions):
+class CustomChatCompletionModel(PromptCompletionModel):
+    def __init__(self, options: CustomChatCompletionModelOptions):
         self.options = options
         # Create client
         self._session = requests.Session()
