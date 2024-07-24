@@ -4,6 +4,8 @@ Welcome to our sample application, designed to demonstrate the flexibility and p
 
 ## Features
 
+The `CustomChatcompletionModel` class in [src/chat_completion_model.py](src\chat_completion_model.py), which will be as the model of planner when creating the teams-ai bot application in [src/bot.py](src\bot.py), is an implementation of `PromptCompletionModel` from [teams-ai library](https://github.com/microsoft/teams-ai/blob/main/python/packages/ai/teams/ai/models/prompt_completion_model.py). We implement the `complete_prompt` method, in which the prompt and config will be sent to AI model API in a POST request and then return the response. In this sample, remote deployed and local running custom models are both supported.
+
 - **Support for Remote Custom Models**: 
 
     Leverage the capabilities of advanced AI models hosted on remote servers, such as [Azure AI Studio](https://ai.azure.com/). This option is ideal for those looking to utilize cloud-based AI services for enhanced performance and scalability.
@@ -11,7 +13,7 @@ Welcome to our sample application, designed to demonstrate the flexibility and p
 
     For users who prefer or require running AI models locally, this app supports integration with local models, including transformer pre-trained models. This is particularly useful for development and testing purposes, or when operating in environments with limited internet access.
     
-    In this sample, we leverage [microsoft/phi-3-mini-4k-instruct](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct) as pre-trained local model in `transfomers` library and host a local server to run the model locally.
+    In this sample, we leverage [microsoft/phi-3-mini-4k-instruct](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct) as pre-trained local model and host a local server to run the model locally. The model files will be downloaded to local machine and you can use it through [transfomers](https://github.com/huggingface/transformers/blob/main/docs/source/en/model_doc/phi3.md) library.
 
 
 ## Get started with the sample
