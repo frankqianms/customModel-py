@@ -10,7 +10,7 @@ from teams.ai.planners import ActionPlanner, ActionPlannerOptions
 from teams.ai.prompts import PromptManager, PromptManagerOptions
 from teams.state import TurnState
 
-from chat_completion_model import CustomChatCompletionModel, CustomChatCompletionModelOptions
+from custom_chat_completion_model import CustomChatCompletionModel, CustomChatCompletionModelOptions
 from config import Config
 
 config = Config()
